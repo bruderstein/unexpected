@@ -683,8 +683,7 @@ describe('addAssertion', function () {
             });
         });
 
-        // TODO: Need to enable this when flag passing between chained and non-chained works
-        it.skip('does not break when declaring multiple patterns that do not have the same set of flags defined', function () {
+        it('does not break when declaring multiple patterns that do not have the same set of flags defined', function () {
             var clonedExpect = expect.clone()
                 .addAssertion(['[not] to be foo', 'to be foo aliased without the not flag'], function (expect, subject) {
                     expect(subject, '[not] to equal', 'foo');
