@@ -669,6 +669,21 @@ describe('addAssertion', function () {
            );
         });
 
+        it('supports transferring flags from chained assertions to nested expect with chained', function () {
+            var clonedExpect = expect.clone()
+                .addAssertion('[not] to be sorted', function (expect, subject) {
+                    expect(subject).toBeA('array');
+                    expect(subject).forwardFlags().toEqual([].concat(subject).sort());
+                });
+
+            clonedExpect([1, 2, 3]).toBeSorted();
+            clonedExpect([1, 3, 2]).notToBeSorted();
+            expect(function () {
+                clonedExpect([1, 2, 3]).notToBeSorted();
+            }, 'to throw', 'expected [ 1, 2, 3 ] not to be sorted');
+
+        });
+
         describe('when overriding an assertion', function () {
             it('uses the most specific version', function () {
                 var clonedExpect = expect.clone()
