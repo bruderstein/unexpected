@@ -11,10 +11,12 @@ describe('unexpected', function () {
         it('fails when given no parameters', function () {
             expect(function () {
                 expect();
-            }, 'to throw', 'The expect function requires at least two parameters.');
+            }, 'to throw', 'The expect function requires at least one parameter for the chained syntax or two parameters for the string syntax.');
         });
 
-        it('fails when given only one parameter', function () {
+        it.skip('fails when given only one parameter', function () {
+            // Skipping because this is no longer true. This test should be removed,
+            // but maybe that's deserves it's own PR :)
             expect(function () {
                 expect('foo');
             }, 'to throw', 'The expect function requires at least two parameters.');
