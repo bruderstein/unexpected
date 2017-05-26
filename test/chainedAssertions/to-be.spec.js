@@ -9,55 +9,53 @@ describe('to be assertion', function () {
         expect('1').notToBe(1);
         expect(null).notToBe(undefined);
         expect(null).toBeNull();
-        /*
-        expect(0, 'not to be null');
-        expect(undefined, 'not to be null');
-        expect(true, 'to be true');
-        expect(false, 'not to be true');
-        expect(false, 'to be false');
-        expect(true, 'not to be false');
-        expect(undefined, 'to be undefined');
-        expect(false, 'to be defined');
-        expect({}, 'to be defined');
-        expect('', 'to be defined');
-        */
+        expect(0).notToBeNull();
+        expect(undefined).notToBeNull();
+        expect(true).toBeTrue();
+        expect(false).notToBeTrue();
+        expect(false).toBeFalse();
+        expect(true).notToBeFalse();
+        expect(undefined).toBeUndefined();
+        expect(false).toBeDefined();
+        expect({}).toBeDefined();
+        expect('').toBeDefined();
+        expect(null).toBeDefined()
     });
 
-    /*
     it('NaN as equal to NaN', function () {
-        expect(NaN, 'to be', NaN);
+        expect(NaN).toBe(NaN);
     });
 
     it('considers negative zero not to be zero', function () {
-        expect(-0, 'not to be', 0);
+        expect(-0).notToBe(0);
     });
 
     it('considers negative zero to be itself', function () {
-        expect(-0, 'to be', -0);
+        expect(-0).toBe(-0);
     });
 
     it('considers zero to be itself', function () {
-        expect(0, 'to be', 0);
+        expect(0).toBe(0);
     });
 
     if (typeof Buffer !== 'undefined') {
         it('asserts === equality for Buffers', function () {
             var buffer = new Buffer([0x45, 0x59]);
-            expect(buffer, 'to be', buffer);
+            expect(buffer).toBe(buffer);
         });
     }
 
     if (typeof Uint8Array !== 'undefined') {
         it('asserts === equality for Uint8Array', function () {
             var uint8Array = new Uint8Array([0x45, 0x59]);
-            expect(uint8Array, 'to be', uint8Array);
+            expect(uint8Array).toBe(uint8Array);
         });
     }
 
     describe('on strings', function () {
         it('throws when the assertion fails', function () {
             expect(function () {
-                expect('foo', 'to be', 'bar');
+                expect('foo').toBe('bar');
             }, 'to throw exception',
                    "expected 'foo' to be 'bar'\n" +
                    "\n" +
@@ -65,19 +63,18 @@ describe('to be assertion', function () {
                    "+bar");
 
             expect(function () {
-                expect(true, 'not to be', true);
+                expect(true).notToBe(true);
             }, 'to throw exception', "expected true not to be true");
 
             expect(function () {
-                expect(undefined, 'to be defined');
+                expect(undefined).toBeDefined();
             }, 'to throw exception', "expected undefined to be defined");
         });
 
         it('does not provide a diff when comparing against undefined', function () {
             expect(function () {
-                expect('blabla', 'to be undefined');
+                expect('blabla').toBeUndefined();
             }, 'to throw', "expected 'blabla' to be undefined");
         });
     });
-    */
 });
