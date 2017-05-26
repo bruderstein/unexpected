@@ -622,4 +622,85 @@ describe('addAssertion', function () {
                '-bar\n' +
                '+foo');
     });
+
+    describe('with chaining', function () {
+        it('adds a chained assertion', function () {
+            var clonedExpect = expect.clone();
+            var calls = [];
+            clonedExpect.addAssertion('<string> to foo', function (expect, subject) {
+                calls.push(subject);
+            });
+
+            clonedExpect('bar').toFoo();
+            expect(calls, 'to equal', ['bar']);
+        });
+
+        it('supports transferring flags from the chained custom assertion to nested expect with strings', function () {
+            var clonedExpect = expect.clone()
+                .addAssertion('[not] to be sorted', function (expect, subject) {
+                    expect(subject, 'to be an array');
+                    expect(subject, '[not] to equal', [].concat(subject).sort());
+                });
+
+            clonedExpect([1, 2, 3]).toBeSorted();
+            clonedExpect([1, 3, 2]).notToBeSorted();
+            expect(function () {
+                clonedExpect([1, 2, 3]).notToBeSorted();
+            }, 'to throw', 'expected [ 1, 2, 3 ] not to be sorted');
+        });
+
+        describe('when overriding an assertion', function () {
+            it('uses the most specific version', function () {
+                var clonedExpect = expect.clone()
+                    .addAssertion('<string> to foo', function (expect, subject) {
+                        expect.errorMode = 'bubble';
+                        expect.fail('old');
+                    }).addAssertion('<any> to foo', function (expect, subject) {
+                        expect.errorMode = 'bubble';
+                        expect.fail('new');
+                    });
+
+                expect(function () {
+                    clonedExpect('bar').toFoo();
+                }, 'to throw', 'old');
+            });
+
+            describe('with the same specificity', function () {
+                it('uses the most recently added version', function () {
+                    var clonedExpect = expect.clone()
+                        .addAssertion('to foo', function (expect, subject) {
+                            expect.errorMode = 'bubble';
+                            expect.fail('old');
+                        }).addAssertion('to foo', function (expect, subject) {
+                            expect.errorMode = 'bubble';
+                            expect.fail('new');
+                        });
+
+                    expect(function () {
+                        clonedExpect('bar').toFoo();
+                    }, 'to throw', 'new');
+                });
+            });
+        });
+
+        // TODO: Need to enable this when flag passing between chained and non-chained works
+        it.skip('does not break when declaring multiple patterns that do not have the same set of flags defined', function () {
+            var clonedExpect = expect.clone()
+                .addAssertion(['[not] to be foo', 'to be foo aliased without the not flag'], function (expect, subject) {
+                    expect(subject, '[not] to equal', 'foo');
+                });
+
+            clonedExpect('foo').toBeFoo();
+            clonedExpect('foo').toBeFooAliasedWithoutTheNotFlag();
+
+            clonedExpect('bar').notToBeFoo();
+            clonedExpect(function () {
+                    clonedExpect('bar').toBeFooAliasedWithoutTheNotFlag();
+                }, 'to throw',
+                "expected 'bar' to be foo aliased without the not flag\n" +
+                "\n" +
+                "-bar\n" +
+                "+foo");
+        });
+    });
 });
