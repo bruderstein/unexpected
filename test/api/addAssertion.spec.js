@@ -649,6 +649,26 @@ describe('addAssertion', function () {
             }, 'to throw', 'expected [ 1, 2, 3 ] not to be sorted');
         });
 
+        it('supports chained assertions on a nested expect', function () {
+            var clonedExpect = expect.clone();
+            clonedExpect.addAssertion('<any> to be foo', function (expect, subject) {
+                expect(subject).toEqual('foo');
+            });
+
+            clonedExpect('foo').toBeFoo();
+            expect(function () {
+                    clonedExpect('bar').toBeFoo();
+                },
+                'to throw',
+               [
+                   'expected \'bar\' to be foo',
+                   '',
+                   '-bar',
+                   '+foo'
+               ].join('\n')
+           );
+        });
+
         describe('when overriding an assertion', function () {
             it('uses the most specific version', function () {
                 var clonedExpect = expect.clone()
