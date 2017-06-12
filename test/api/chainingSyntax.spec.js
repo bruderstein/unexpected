@@ -150,6 +150,17 @@ describe('chaining syntax', function () {
         });
     });
 
+    describe('when mixing with string assertions', function () {
+        it('can call a chained assertion from inside a string assertion', function () {
+            var clonedExpect = expect.clone();
+            clonedExpect.addAssertion('<number> to foo equal <number>', function (expect, subject, value) {
+                expect(subject).toEqual(value);
+            });
+
+            clonedExpect(42, 'to foo equal', 42)
+        });
+    });
+
     describe('errors', function () {
        it('returns a nested error', function () {
 
