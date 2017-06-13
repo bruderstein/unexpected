@@ -148,6 +148,33 @@ describe('chaining syntax', function () {
             });
            return expect(clonedExpect(42).whenDelayedABit().toEqual(42), 'to be fulfilled with', 42);
         });
+
+        it('shifts the subject when an assertion returns a promise without shifting', function () {
+            var clonedExpect = expect.clone();
+            clonedExpect.addAssertion('<number> to eventually equal <number>', function (expect, subject, value) {
+                return expect.promise(function (resolve, reject) {
+                    setTimeout(function () {
+                        resolve(subject + 1);
+                    }, 1);
+                });
+            });
+
+            return clonedExpect(42).toEventuallyEqual(11).then(function (value) {
+               expect(value, 'to equal', 43);
+            });
+        });
+
+        it('shifts the subject when an assertion returns a promise without shifting and the promise is oathbreakable', function () {
+            var clonedExpect = expect.clone();
+            clonedExpect.addAssertion('<number> to eventually equal <number>', function (expect, subject, value) {
+                return expect.promise.resolve(subject + 1);
+            });
+
+            return clonedExpect(42).toEventuallyEqual(11).then(function (value) {
+                expect(value, 'to equal', 43);
+            });
+
+        });
     });
 
     describe('when mixing with string assertions', function () {
